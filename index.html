@@ -246,6 +246,32 @@
       transform: none;
     }
 
+
+    .mode-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .mode-title {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .mode-description {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .mode-actions {
+      margin-top: 16px;
+    }
+
     .progress-line {
       display: flex;
       justify-content: space-between;
@@ -316,6 +342,22 @@
           <div class="stat-label">Accuracy</div>
           <div class="stat-value" id="accuracyStat">0%</div>
         </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="mode-header">
+        <div>
+          <div class="mode-title">Choose quiz mode</div>
+          <p class="mode-description">
+            Use the full quiz for complete preparation, or start a short random session with 20 or 10 questions.
+          </p>
+        </div>
+      </div>
+      <div class="actions mode-actions">
+        <button class="action secondary" id="allModeBtn">Full quiz</button>
+        <button class="action secondary" id="random20Btn">Random 20 questions</button>
+        <button class="action secondary" id="random10Btn">Random 10 questions</button>
       </div>
     </section>
 
@@ -2879,6 +2921,7 @@
     let answeredIds = new Set();
     let mistakes = new Set();
     let mistakesOnly = false;
+    let activeMode = "all";
 
     const questionStat = document.getElementById("questionStat");
     const correctStat = document.getElementById("correctStat");
@@ -2898,6 +2941,9 @@
     const progressText = document.getElementById("progressText");
     const progressBar = document.getElementById("progressBar");
     const modeBadge = document.getElementById("modeBadge");
+    const allModeBtn = document.getElementById("allModeBtn");
+    const random20Btn = document.getElementById("random20Btn");
+    const random10Btn = document.getElementById("random10Btn");
 
     function shuffle(array) {
       const copy = [...array];
@@ -2957,7 +3003,15 @@
       questionNumber.textContent = `Question #${q.id}`;
       questionText.textContent = q.question;
       multiHint.textContent = isMulti ? `Multiple answers: select ${correctIndexes.size} options` : "Single answer";
-      modeBadge.textContent = mistakesOnly ? "Mistakes mode" : "All questions";
+      if (mistakesOnly) {
+        modeBadge.textContent = "Mistakes mode";
+      } else if (activeMode === "random20") {
+        modeBadge.textContent = "Random 20 questions";
+      } else if (activeMode === "random10") {
+        modeBadge.textContent = "Random 10 questions";
+      } else {
+        modeBadge.textContent = "All questions";
+      }
 
       optionsEl.innerHTML = "";
       currentOptions.forEach((option, index) => {
@@ -2993,8 +3047,9 @@
       mistakesBtn.textContent = `Practice mistakes (${mistakes.size})`;
       mistakesBtn.disabled = mistakes.size === 0;
 
-      progressText.textContent = `${answeredIds.size} / ${QUESTIONS.length}`;
-      progressBar.style.width = `${(answeredIds.size / QUESTIONS.length) * 100}%`;
+      const modeAnswered = order.filter(id => answeredIds.has(id)).length;
+      progressText.textContent = `${modeAnswered} / ${order.length}`;
+      progressBar.style.width = `${(modeAnswered / order.length) * 100}%`;
     }
 
     function toggleOption(index, isMulti) {
@@ -3054,8 +3109,9 @@
       render();
     }
 
-    function restartAll() {
-      order = shuffle(QUESTIONS.map((_, index) => index));
+
+    function resetSession(newOrder, modeName) {
+      order = newOrder;
       currentIndex = 0;
       selected = new Set();
       checked = false;
@@ -3065,8 +3121,22 @@
       answeredIds = new Set();
       mistakes = new Set();
       mistakesOnly = false;
-      localStorage.removeItem("webDevQuizProgress");
+      activeMode = modeName;
+      saveProgress();
       render();
+    }
+
+    function startFullQuiz() {
+      resetSession(shuffle(QUESTIONS.map((_, index) => index)), "all");
+    }
+
+    function startRandomQuiz(count, modeName) {
+      resetSession(shuffle(QUESTIONS.map((_, index) => index)).slice(0, count), modeName);
+    }
+
+    function restartAll() {
+      localStorage.removeItem("webDevQuizProgress");
+      startFullQuiz();
     }
 
     function startMistakesMode() {
@@ -3077,6 +3147,7 @@
       checked = false;
       currentOptions = [];
       mistakesOnly = true;
+      activeMode = "mistakes";
       saveProgress();
       render();
     }
@@ -3089,7 +3160,8 @@
         wrongCount,
         answeredIds: [...answeredIds],
         mistakes: [...mistakes],
-        mistakesOnly
+        mistakesOnly,
+        activeMode
       }));
     }
 
@@ -3104,6 +3176,7 @@
         answeredIds = new Set(saved.answeredIds || []);
         mistakes = new Set(saved.mistakes || []);
         mistakesOnly = Boolean(saved.mistakesOnly);
+        activeMode = saved.activeMode || (mistakesOnly ? "mistakes" : "all");
       } catch (e) {
         console.warn("Could not load progress", e);
       }
@@ -3113,6 +3186,9 @@
     nextBtn.addEventListener("click", nextQuestion);
     restartBtn.addEventListener("click", restartAll);
     mistakesBtn.addEventListener("click", startMistakesMode);
+    allModeBtn.addEventListener("click", startFullQuiz);
+    random20Btn.addEventListener("click", () => startRandomQuiz(20, "random20"));
+    random10Btn.addEventListener("click", () => startRandomQuiz(10, "random10"));
 
     loadProgress();
     render();
