@@ -1,0 +1,3121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Development Memorization Quiz</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: #111827;
+      --primary-hover: #374151;
+      --green-bg: #dcfce7;
+      --green-text: #166534;
+      --green-border: #22c55e;
+      --red-bg: #fee2e2;
+      --red-text: #991b1b;
+      --red-border: #ef4444;
+      --blue-bg: #dbeafe;
+      --blue-text: #1d4ed8;
+      --amber: #f59e0b;
+      --purple-bg: #ede9fe;
+      --purple-text: #5b21b6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 32%),
+        radial-gradient(circle at top right, rgba(168, 85, 247, 0.16), transparent 34%),
+        var(--bg);
+      padding: 22px;
+    }
+
+    .container {
+      width: min(960px, 100%);
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(229, 231, 235, 0.92);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+      padding: 24px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 46px);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 680px;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--purple-bg);
+      color: var(--purple-text);
+      font-weight: 900;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .stat {
+      border-radius: 20px;
+      padding: 14px;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stat-value {
+      margin-top: 7px;
+      font-size: 24px;
+      font-weight: 950;
+    }
+
+    .question-number {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .question {
+      margin: 0;
+      font-size: clamp(21px, 4vw, 31px);
+      line-height: 1.25;
+      letter-spacing: -0.035em;
+      white-space: pre-wrap;
+    }
+
+    .hint {
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue-text);
+      background: var(--blue-bg);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .option {
+      width: 100%;
+      text-align: left;
+      border: 2px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 20px;
+      padding: 16px 18px;
+      font-size: 16px;
+      line-height: 1.42;
+      font-weight: 780;
+      white-space: pre-wrap;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+    }
+
+    .option:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: #94a3b8;
+      background: #f8fafc;
+    }
+
+    .option.selected {
+      border-color: #2563eb;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .option.correct {
+      border-color: var(--green-border);
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    .option.wrong {
+      border-color: var(--red-border);
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    .option.dim {
+      background: #f9fafb;
+      color: #9ca3af;
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      line-height: 1.45;
+    }
+
+    .feedback.show { display: block; }
+    .feedback .result { font-weight: 950; margin-bottom: 8px; }
+    .feedback.correct-text .result { color: var(--green-text); }
+    .feedback.wrong-text .result { color: var(--red-text); }
+
+    .answers-list {
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    button.action {
+      border: 0;
+      border-radius: 18px;
+      padding: 13px 18px;
+      font-weight: 950;
+      cursor: pointer;
+      font-size: 15px;
+      transition: transform 0.12s ease, background 0.12s ease;
+    }
+
+    button.action:hover:not(:disabled) { transform: translateY(-1px); }
+
+    .primary { background: var(--primary); color: #fff; }
+    .primary:hover:not(:disabled) { background: var(--primary-hover); }
+    .secondary { background: #fff; border: 1px solid var(--border) !important; color: var(--text); }
+    .warning { background: var(--amber); color: #fff; }
+
+    .action:disabled {
+      background: #d1d5db;
+      color: #6b7280;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .progress-line {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .progress {
+      height: 12px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #111827, #2563eb);
+      transition: width 0.18s ease;
+    }
+
+    .footer {
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+      padding: 8px 0 22px;
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 14px; }
+      .card { border-radius: 22px; padding: 18px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      button.action { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="header">
+        <div>
+          <h1>Web Development Memorization Quiz</h1>
+          <p class="subtitle">
+            Choose the answer and press <strong>Check answer</strong>. Correct options become green.
+            Wrong selected options become red. Multi-answer questions are supported.
+          </p>
+        </div>
+        <div class="badge" id="modeBadge">All questions</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Question</div>
+          <div class="stat-value" id="questionStat">1 / 141</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Correct</div>
+          <div class="stat-value" id="correctStat">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Wrong</div>
+          <div class="stat-value" id="wrongStat">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Accuracy</div>
+          <div class="stat-value" id="accuracyStat">0%</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="question-number" id="questionNumber">Question #1</div>
+      <h2 class="question" id="questionText"></h2>
+      <div class="hint" id="multiHint">Single answer</div>
+      <div class="options" id="options"></div>
+
+      <div class="feedback" id="feedback">
+        <div class="result" id="feedbackResult"></div>
+        <div id="feedbackAnswer"></div>
+      </div>
+
+      <div class="actions">
+        <button class="action primary" id="checkBtn">Check answer</button>
+        <button class="action primary" id="nextBtn">Next question</button>
+        <button class="action warning" id="mistakesBtn">Practice mistakes (0)</button>
+        <button class="action secondary" id="restartBtn">Restart all</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="progress-line">
+        <span>Progress</span>
+        <span id="progressText">0 / 141</span>
+      </div>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </section>
+
+    <div class="footer">Static HTML quiz. Ready for GitHub Pages.</div>
+  </main>
+
+  <script>
+    const QUESTIONS = [
+  {
+    "id": 1,
+    "question": "In order to install Browser Sync, what must be installed first?",
+    "options": [
+      {
+        "text": "Javascript",
+        "correct": false
+      },
+      {
+        "text": "Google Chrome Developer Tools",
+        "correct": false
+      },
+      {
+        "text": "Ruby",
+        "correct": false
+      },
+      {
+        "text": "NodeJs",
+        "correct": true
+      },
+      {
+        "text": "Java",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "The core purpose of HTML is to (hint: something a pure text file with content won't be able to accomplish)",
+    "options": [
+      {
+        "text": "Display web page content to the user",
+        "correct": false
+      },
+      {
+        "text": "Communicate the structure of the content",
+        "correct": true
+      },
+      {
+        "text": "Tell the browser how to position and align content in the browser window",
+        "correct": false
+      },
+      {
+        "text": "Tell the browser what should happen once the page is loaded",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "W3C (World Wide Web Consortium) is the only organization that dictates what and how browsers should implement HTML5",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "WHATWG does NOT version HTML. For them, it's NOT HTML5. It's just HTML.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "Which of the following is the only requirement for an HTML5 element?",
+    "options": [
+      {
+        "text": "It must have an opening tag.",
+        "correct": true
+      },
+      {
+        "text": "It must have a closing tag.",
+        "correct": false
+      },
+      {
+        "text": "It must include at least one attribute.",
+        "correct": false
+      },
+      {
+        "text": "It must be written in lowercase.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "question": "What would happen if you didn't specify the HTML5 declaration?",
+    "options": [
+      {
+        "text": "Nothing. HTML5 is very liberal about its declaration and it's only a recommendation to use it",
+        "correct": false
+      },
+      {
+        "text": "The browser will revert to the previous version of HTML automatically",
+        "correct": false
+      },
+      {
+        "text": "The page will be interpreted in quirks mode",
+        "correct": true
+      },
+      {
+        "text": "The page will not display at all",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "Browsers ALWAYS interpret HTML sequentially, top to bottom",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "Which of the following declarations correctly specify an HTML5 document? Select all that apply.",
+    "options": [
+      {
+        "text": "<html-document>",
+        "correct": false
+      },
+      {
+        "text": "<!DOCTYPE html>",
+        "correct": true
+      },
+      {
+        "text": "<! doctype html>",
+        "correct": false
+      },
+      {
+        "text": "<!doctype html>",
+        "correct": true
+      },
+      {
+        "text": "<!doctype html5>",
+        "correct": false
+      },
+      {
+        "text": "<!DocTyPe htML     >",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "Identify the invalid HTML code snippet below.",
+    "options": [
+      {
+        "text": "<div>Hey there! I am just a lonely quiz answer. Will you click me? I am bored!</div>",
+        "correct": false
+      },
+      {
+        "text": "<section><p>The sale numbers are in...</section> You ARE a closer, Johnson!</p>",
+        "correct": true
+      },
+      {
+        "text": "<article><h>Hmm!</h><p>You are ignoring all the other answers just to look at me?! I AM special!</p></article>",
+        "correct": false
+      },
+      {
+        "text": "<div><span>Will you just tag along with me?</span></div>",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "Meta tags communicate information about the browser to the server",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "question": "What does Quirks Mode mean in a web browser?",
+    "options": [
+      {
+        "text": "The browser assumes that the page does not follow modern HTML/CSS standards and renders it using legacy behavior.",
+        "correct": true
+      },
+      {
+        "text": "The browser may become unstable and crash while rendering the page.",
+        "correct": false
+      },
+      {
+        "text": "Stylesheets are disabled entirely and HTML is shown without formatting.",
+        "correct": false
+      },
+      {
+        "text": "“Quirks Mode” is not a real term",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "question": "Even though the width and height attributes of the 'img' tag are not required, it's always a good idea to use them",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "question": "Without applying any additional styles, the following code snippet will show up in the browser as how many lines of text? (Assume the browser is stretched wide enough not to cause any single line to wrap)",
+    "options": [
+      {
+        "text": "1",
+        "correct": false
+      },
+      {
+        "text": "2",
+        "correct": false
+      },
+      {
+        "text": "3",
+        "correct": false
+      },
+      {
+        "text": "4",
+        "correct": true
+      },
+      {
+        "text": "7",
+        "correct": false
+      },
+      {
+        "text": "9",
+        "correct": false
+      },
+      {
+        "text": "10",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "question": "Which of the following HTML snippets is invalid?",
+    "options": [
+      {
+        "text": "<div>I love <span>gardening!</span></div>",
+        "correct": false
+      },
+      {
+        "text": "<span>I love <div>gardening!</div></span>",
+        "correct": true
+      },
+      {
+        "text": "<a>I love <div>gardening<span>!</span></div></a>",
+        "correct": false
+      },
+      {
+        "text": "All are valid.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "question": "Which of the following statements about semantic HTML tags are true? Select all that apply.",
+    "options": [
+      {
+        "text": "May help the SEO ranking of the page",
+        "correct": true
+      },
+      {
+        "text": "Help computers better understand the structure of the page",
+        "correct": true
+      },
+      {
+        "text": "Help humans better understand the structure of the page",
+        "correct": true
+      },
+      {
+        "text": "Are required to be used in HTML5",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "question": "One purpose of HTML Character Entity References is",
+    "options": [
+      {
+        "text": "To allow the browser to display certain characters it would otherwise interpret as part of HTML code and not something to display to the user",
+        "correct": true
+      },
+      {
+        "text": "HTML Character Entity References were useful before HTML5 was introduced. After HTML5, they are no longer needed",
+        "correct": false
+      },
+      {
+        "text": "Identify character sets that the browser can support",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "question": "Using only HTML, how would you make sure that 3 words in an HTML document ALWAYS appear together on 1 line, even if the text word-wraps because the browser window is too narrow for that text line?",
+    "options": [
+      {
+        "text": "Impossible to accomplish with HTML alone!",
+        "correct": false
+      },
+      {
+        "text": "Place &nowrap; entity reference before the 1st word and after the 3rd word",
+        "correct": false
+      },
+      {
+        "text": "Place &nbsp; entity reference after the 1st word and after the 2nd word (with no spaces in between words and entity references)",
+        "correct": true
+      },
+      {
+        "text": "Place &nbsp; entity reference before the 1st word and after the 3rd word",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "question": "How can you force the browser to open a link in a new window or tab?",
+    "options": [
+      {
+        "text": "Send some special meta tags as part of the page",
+        "correct": false
+      },
+      {
+        "text": "Instruct the user to right-click on the link and choose \"Open in a New Tab\"",
+        "correct": false
+      },
+      {
+        "text": "Include target='_blank' attribute as part of the <a> tag",
+        "correct": true
+      },
+      {
+        "text": "Include target=\"new\" attribute as part of the <a> tag",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "question": "The following code rendering in the middle section of the page allows someone to directly link to that middle section of the page, not just the beginning of the page: [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "question": "Even though the width and height attributes of the 'img' tag are not required, it's always a good idea to use them",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "question": "A stylesheet is a collection of CSS rules",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "question": "CSS is only allowed to have 1 property/value pair per each CSS rule",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "question": "Identify valid CSS rules. Select all that apply.",
+    "options": [
+      {
+        "text": "p { height: 23px; font-size: 12px; }",
+        "correct": true
+      },
+      {
+        "text": "p { height: 23px; font-size: 12px }",
+        "correct": true
+      },
+      {
+        "text": "p = \"height: 23px; font-size: 12px;\"",
+        "correct": false
+      },
+      {
+        "text": "p { height = 23px, font-size = 12px, }",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "question": "A CSS rule can be applied to only one selector at a time.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "question": "A CSS rule has to be defined separately for each selector",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "question": "Given the following HTML code: Which of the following CSS rules turns the text of the first <p> tag blue, but NOT the second <p> tag? (after all, the second one wants to be left alone.) [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "div > p { color: blue; }",
+        "correct": true
+      },
+      {
+        "text": "div.p { color: blue; }",
+        "correct": false
+      },
+      {
+        "text": "div p { color: blue; }",
+        "correct": true
+      },
+      {
+        "text": "p { color: blue; }",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "question": "Given the following HTML code: Which of the following CSS rules turns the text of the first <p> tag blue, but NOT the second <p> tag? (It still wants to be left alone.) [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": ".makeMeBlue > p { color: blue; }",
+        "correct": false
+      },
+      {
+        "text": "div.makeMeBlue p { color: blue; }",
+        "correct": true
+      },
+      {
+        "text": "div > div > p { color: blue; }",
+        "correct": true
+      },
+      {
+        "text": "div p { color: blue; }",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "question": "Given the following HTML code: Which of the statement(s) below are true? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "The background color behind the words 'Hello' and 'World' is blue.",
+        "correct": true
+      },
+      {
+        "text": "Both backgrounds will span the entire width of the browser window.",
+        "correct": false
+      },
+      {
+        "text": "The div element's background will span the entire width of the browser.",
+        "correct": true
+      },
+      {
+        "text": "The span element's background will span the entire width of the browser.",
+        "correct": false
+      },
+      {
+        "text": "The text \"World!\" will appear on a separate line, below the text \"Hello\".",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "question": "Given the following HTML code: Which CSS rule below will set the font size of 'Div 5' text to 24px when the user hovers the mouse over ANY area inside the 'a' element? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "a:hover:nth-child(5) { font-size: 24px; }",
+        "correct": false
+      },
+      {
+        "text": "a:hover div:nth-child(5) { font-size: 24px; }",
+        "correct": true
+      },
+      {
+        "text": "a:hover > div > div > div > div > div { font-size: 24px; }",
+        "correct": false
+      },
+      {
+        "text": "div:hover { font-size: 24px; }",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "question": "It's a good idea to place all of your CSS styles into a separate file, external to the HTML page, because you can share the same styles across multiple HTML pages that way.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "question": "Given the following HTML code: What color will the words \"I am having a color identity crisis!\" be? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "Blue",
+        "correct": true
+      },
+      {
+        "text": "Whatever the default color the browser assigns to it since we didn't specify the color of the <section> tag",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "question": "Given the following HTML code: What color will the words \"I am having a color identity crisis again! Help!\" be? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "Blue",
+        "correct": false
+      },
+      {
+        "text": "Green",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "question": "Pixels are absolute units of measurements (as opposed to relative).",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "question": "Given the following HTML code: What is the pixel size of the text \"How big am I?\", assuming the user did NOT increase zoom in the browser window? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "90px",
+        "correct": true
+      },
+      {
+        "text": "10px",
+        "correct": false
+      },
+      {
+        "text": "1/3 of a pixel",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "question": "What is the rendered width of the element including padding and border but not margin?",
+    "options": [
+      {
+        "text": "140px",
+        "correct": true
+      },
+      {
+        "text": "160px",
+        "correct": false
+      },
+      {
+        "text": "200px",
+        "correct": false
+      },
+      {
+        "text": "100px",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "question": "Assuming no other styles exist, how many pixels wide will the 'div' tag be with with following styles:",
+    "options": [
+      {
+        "text": "140px",
+        "correct": false
+      },
+      {
+        "text": "160px",
+        "correct": false
+      },
+      {
+        "text": "200px",
+        "correct": false
+      },
+      {
+        "text": "100px",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "question": "Right margin of one element that touches the left margin of another element creates a combined margin that is equal to the sum of both margins.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "question": "Given the following HTML code: What will be the margin between the 2 'div' elements? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "10px",
+        "correct": false
+      },
+      {
+        "text": "20px",
+        "correct": true
+      },
+      {
+        "text": "30px",
+        "correct": false
+      },
+      {
+        "text": "0",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "question": "Given the following HTML code: What will you see inside the div element? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "Some image on top of a blue background",
+        "correct": false
+      },
+      {
+        "text": "Blue background, but no image",
+        "correct": false
+      },
+      {
+        "text": "Blue background will be covering the image",
+        "correct": false
+      },
+      {
+        "text": "Just the image",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "question": "Floating elements takes them out of the regular document flow",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "question": "The following code: says that none of the section elements should allow anything to float to the right of them. [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "question": "Settings position: relative; on an element takes it out of regular document flow.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "question": "By default, ALL HTML elements have their position property set to static.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "question": "Given the following media query: [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "The styles within this media query will apply if the browser window is 991px wide.",
+        "correct": false
+      },
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "question": "The usual approach to using media queries is to provide some base styling and then change and/or add to them within each media query.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "question": "Most responsive frameworks use a 12-grid layout",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "question": "To have a 12-grid layout means that 1 cell in that grid has width: 8.33% (100 / 12)",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "question": "The following meta tag:",
+    "options": [
+      {
+        "text": "Tells the browser to consider the width of the device as the real width of the screen and set its zoom level to 1, i.e., 100%, so it's not zoomed in or zoomed out.",
+        "correct": false
+      },
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "question": "Twitter Bootstrap is one of the most popular CSS frameworks today",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "question": "This Bootstrap Grid class: col-md-6 means that the element to which it is applied should stretch to be 50% of the browser screen and collapse/stack below a certain browser screen width (hinted to by the 'md' qualifier)",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "question": "The Bootstrap Grid requires us to only use 'div' elements for each grid cell.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "question": "Bootstrap Grid has to be defined inside of some parent element which has its class set to either 'container' or 'container-fluid'.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "question": "Which of the following describes a key feature of Bootstrap's grid system?",
+    "options": [
+      {
+        "text": "It allows for a twelve-column layout that is responsive across all devices.",
+        "correct": true
+      },
+      {
+        "text": "It requires custom CSS for responsiveness on smaller devices.",
+        "correct": false
+      },
+      {
+        "text": "It only works on desktop browsers and not on mobile devices.",
+        "correct": false
+      },
+      {
+        "text": "It supports a maximum of eight columns per row for better mobile responsiveness",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "question": "What is the significance of Bootstrap in web development?",
+    "options": [
+      {
+        "text": "Bootstrap automatically generates HTML content for any web page.",
+        "correct": false
+      },
+      {
+        "text": "Bootstrap can only be used for developing mobile applications.",
+        "correct": false
+      },
+      {
+        "text": "Bootstrap significantly simplifies the process of creating responsive designs and ensures consistency across browsers.",
+        "correct": true
+      },
+      {
+        "text": "Bootstrap is only useful for creating animations and transition",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "question": "Which of the following statements best describes the concept of origin precedence in CSS?",
+    "options": [
+      {
+        "text": "Styles in an external stylesheet will always override inline styles.",
+        "correct": false
+      },
+      {
+        "text": "All styles have equal precedence, regardless of their origin.",
+        "correct": false
+      },
+      {
+        "text": "Styles defined in an inline style will override styles in an external stylesheet.",
+        "correct": true
+      },
+      {
+        "text": "Styles in an internal stylesheet are overridden by styles in an external stylesheet",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "question": "Select all CSS properties that affect text styling on web pages.",
+    "options": [
+      {
+        "text": "background-color",
+        "correct": false
+      },
+      {
+        "text": "border-radius",
+        "correct": false
+      },
+      {
+        "text": "text-align",
+        "correct": true
+      },
+      {
+        "text": "font-weight",
+        "correct": true
+      },
+      {
+        "text": "text-transform",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "question": "What is the effect of applying box-sizing: border-box globally using the star selector?",
+    "options": [
+      {
+        "text": "It ensures that the total width and height of an element includes padding and border, not just the content.",
+        "correct": true
+      },
+      {
+        "text": "It applies padding inside the border, reducing the content area without affecting the total size.",
+        "correct": false
+      },
+      {
+        "text": "It only affects the height of the element, leaving width as auto-adjust.",
+        "correct": false
+      },
+      {
+        "text": "It sets the content box as the size of the element, including padding and border.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "question": "Select all correct effects of applying box-sizing: border-box.",
+    "options": [
+      {
+        "text": "Using border-box can prevent overflow issues.",
+        "correct": true
+      },
+      {
+        "text": "box-sizing: border-box affects the document flow by altering positioning.",
+        "correct": false
+      },
+      {
+        "text": "The height of an element includes padding and border with box-sizing: border-box.",
+        "correct": true
+      },
+      {
+        "text": "The width of an element does not include padding and border with box-sizing: border-box",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "question": "What is the primary purpose of using media queries in responsive web design?",
+    "options": [
+      {
+        "text": "To enable JavaScript functionalities in different devices",
+        "correct": false
+      },
+      {
+        "text": "To apply different styles based on device characteristics",
+        "correct": true
+      },
+      {
+        "text": "To enhance the speed of the webpage loading",
+        "correct": false
+      },
+      {
+        "text": "To improve the semantic structure of HTML",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "question": "Which of the following are media features you can use in CSS media queries?",
+    "options": [
+      {
+        "text": "Orientation",
+        "correct": true
+      },
+      {
+        "text": "max-height",
+        "correct": true
+      },
+      {
+        "text": "min-width",
+        "correct": true
+      },
+      {
+        "text": "aspect-ratio",
+        "correct": true
+      },
+      {
+        "text": "font-weight",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "question": "Which pseudo-class selector would you use to style an element when it is hovered over by the mouse?",
+    "options": [
+      {
+        "text": ":visited",
+        "correct": false
+      },
+      {
+        "text": ":hover",
+        "correct": true
+      },
+      {
+        "text": ":active",
+        "correct": false
+      },
+      {
+        "text": ":focus",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "question": "Which of the following are valid CSS selectors to target HTML elements accurately?",
+    "options": [
+      {
+        "text": "Element selector",
+        "correct": true
+      },
+      {
+        "text": "Heading selector",
+        "correct": false
+      },
+      {
+        "text": "JavaScript selector",
+        "correct": false
+      },
+      {
+        "text": "Pseudo-element selectors",
+        "correct": true
+      },
+      {
+        "text": "ID selector",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "question": "When first starting a website project, it's best to jump to coding the website as soon as possible. Once you generate the views in HTML, show them to the client to see if they would approve.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "question": "Mockup illustration of the website must be an exact replica of what you are going to build in HTML/CSS.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "question": "The class 'container-fluid' stretches to the full width of the browser window (minus some margins) and automatically adjusts its width as you change the width of the browser.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "question": "Given the following HTML code snippet: What should go into the 'id' field of the collapsable menu in order to cause the 'button' click to show the menu? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "collapsable-nav",
+        "correct": true
+      },
+      {
+        "text": "#collapsable-nav",
+        "correct": false
+      },
+      {
+        "text": "collapse",
+        "correct": false
+      },
+      {
+        "text": "button",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "question": "One way to load a different size image depending on the browser width is to use 'background-image' CSS property and load a different 'url' in different media queries.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "question": "Given the following HTML code snippet: How many columns will it produce when the browser screen is 1,000px wide (i.e., 'md') [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "3",
+        "correct": true
+      },
+      {
+        "text": "4",
+        "correct": false
+      },
+      {
+        "text": "6",
+        "correct": false
+      },
+      {
+        "text": "2",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "question": "What Bootstrap class would you use in order to show an element on the page ONLY if the width of the browser window was below 768px (extra small or xs)?",
+    "options": [
+      {
+        "text": "visible-xs",
+        "correct": true
+      },
+      {
+        "text": "show-xs",
+        "correct": false
+      },
+      {
+        "text": "xs-show-true",
+        "correct": false
+      },
+      {
+        "text": "display",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "question": "Javascript is always executed sequentially",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "question": "Given the following HTML code snippet: Is this HTML valid? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "No, it's missing a closing 'script' tag. It must always be there.",
+        "correct": true
+      },
+      {
+        "text": "Yes, the closing 'script' tag only needs to be there if javascript code is written in between the opening and closing 'script' tags.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "question": "Identify valid JavaScript code snippets. Select all that apply.",
+    "options": [
+      {
+        "text": "var x = \"Hello World!\";",
+        "correct": true
+      },
+      {
+        "text": "var x = function () { console.log(\"Hello World\"); return; };",
+        "correct": true
+      },
+      {
+        "text": "var x = function () { console.log(\"Hello World\"); return; }; x();",
+        "correct": true
+      },
+      {
+        "text": "var x = function () { console.log(\"Hello World\"); return; }; x = \"Hello, I am a new value!\";",
+        "correct": true
+      },
+      {
+        "text": "var x = function () { console.log(\"Hello World\"); return; ];",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "question": "An object in Javascript is simply a collection of name/value pairs.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "question": "In Javascript, a primitive type can store only 1 name/value pair at a time.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "question": "Strict equality operator (===) differs from regular equality operator (==) in that it checks if both values on its right and left are of the same type first. If they are not, it doesn't try to coerce them to be the same value and just returns false.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "question": "Given the following Javascript code: How many times will the word 'Hello' be printed to the console? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "1",
+        "correct": false
+      },
+      {
+        "text": "3",
+        "correct": false
+      },
+      {
+        "text": "2",
+        "correct": true
+      },
+      {
+        "text": "0",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "question": "Defining a variable as an Object Literal accomplishes pretty much the same thing as defining a variable equal to 'new Object()'. However, it's faster and easier to type up an object literal.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "question": "What is the output for the following Javascript code:",
+    "options": [
+      {
+        "text": "100",
+        "correct": true
+      },
+      {
+        "text": "50",
+        "correct": false
+      },
+      {
+        "text": "10",
+        "correct": false
+      },
+      {
+        "text": "0",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "question": "Javascript doesn't allow anything to be passed by reference",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "question": "What is the output of the following Javascript code:",
+    "options": [
+      {
+        "text": "5",
+        "correct": true
+      },
+      {
+        "text": "10",
+        "correct": false
+      },
+      {
+        "text": "Undefined",
+        "correct": false
+      },
+      {
+        "text": "Null",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 81,
+    "question": "What is the output of the following Javascript code?",
+    "options": [
+      {
+        "text": "Max likes barking! Bark!",
+        "correct": true
+      },
+      {
+        "text": "Buddy likes barking! Bark!",
+        "correct": false
+      },
+      {
+        "text": "It will produce an error",
+        "correct": false
+      },
+      {
+        "text": "likes barking! Bark!",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "question": "What is the output of the following Javascript code:",
+    "options": [
+      {
+        "text": "3",
+        "correct": true
+      },
+      {
+        "text": "0",
+        "correct": false
+      },
+      {
+        "text": "4",
+        "correct": false
+      },
+      {
+        "text": "Error",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "question": "Immediately Invoked Function Expressions are usually used to place code into its own execution context not to conflict with the global scope.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 84,
+    "question": "Given the following code: What (if anything) is missing from this code in order to get it to output the message of the \"dreamOn\" method? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "Nothing is missing. It will output \"I want to see the global scope! Let me out!\"",
+        "correct": false
+      },
+      {
+        "text": "Line 1 and Line 9 should use 'global' instead of 'window'.",
+        "correct": false
+      },
+      {
+        "text": "The function definition in Line 5 is missing an argument. It should accept an argument by the name of 'window'",
+        "correct": false
+      },
+      {
+        "text": "The attempted IIFE is not being invoked and passed in the window object. It's missing '(window)' Line 11 right before the semicolon.",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 85,
+    "question": "Given the following HTML code snippet: What will be the difference in the output between the 2 Javascript code snippets? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "No difference",
+        "correct": true
+      },
+      {
+        "text": "First one will not display the word 'Hi'",
+        "correct": false
+      },
+      {
+        "text": "Second one will throw a Javascript error.",
+        "correct": false
+      },
+      {
+        "text": "First one will throw a Javascript error.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 86,
+    "question": "What will the following code snippet accomplish?",
+    "options": [
+      {
+        "text": "It will output Yey! when the web page is loaded, but before external resources like images are downloaded to the user's machine.",
+        "correct": true
+      },
+      {
+        "text": "It will output Yey! when the user hits the Reload browser button.",
+        "correct": false
+      },
+      {
+        "text": "It will never output Yey!",
+        "correct": false
+      },
+      {
+        "text": "It will output Yey! concurrently as the browser displays the 'h1' tag.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 87,
+    "question": "One of the differences between a GET request and POST is that a GET request passes query parameters as part of the URL whereas POST request passes them as part of the body of the request.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 88,
+    "question": "Given the following Javascript code snippet: What will be the contents of the element with the 'id' value of 'content' after the execution of this Javascript code? [Code snippet is from the source document.]",
+    "options": [
+      {
+        "text": "It will be empty",
+        "correct": true
+      },
+      {
+        "text": "Coursera",
+        "correct": false
+      },
+      {
+        "text": "Whatever the server returns plus the word Coursera",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 89,
+    "question": "Another name for Object Literal is JSON.",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "question": "Identify the invalid JSON string below.",
+    "options": [
+      {
+        "text": "{ \"courseName\": \"Coursera\", \"startingNumberOfStudents\": 12500 }",
+        "correct": false
+      },
+      {
+        "text": "{ \"courseName\": \"Coursera\", \"studentsLoveCourse\": true }",
+        "correct": false
+      },
+      {
+        "text": "{ 'courseName': 'Coursera', 'startingNumberOfStudents': 12500 }",
+        "correct": true
+      },
+      {
+        "text": "{ \"courseName\": { \"name\": \"Coursera\" }, \"startingNumberOfStudents\": 12500 }",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "question": "A web browser is:",
+    "options": [
+      {
+        "text": "A server",
+        "correct": false
+      },
+      {
+        "text": "A client",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "question": "The world wide web is the same as the internet",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 93,
+    "question": "HTML is used to define:",
+    "options": [
+      {
+        "text": "The structure of the page",
+        "correct": true
+      },
+      {
+        "text": "The appearance of the page",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 94,
+    "question": "HTML files end with: (choose ALL that are correct)",
+    "options": [
+      {
+        "text": ".html",
+        "correct": true
+      },
+      {
+        "text": ".htm",
+        "correct": true
+      },
+      {
+        "text": ".www",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 95,
+    "question": "The first web page went live in:",
+    "options": [
+      {
+        "text": "1980",
+        "correct": false
+      },
+      {
+        "text": "1990",
+        "correct": true
+      },
+      {
+        "text": "2000",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 96,
+    "question": "Word processors are ideal for editing HTML",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 97,
+    "question": "In HTML, HT stands for:",
+    "options": [
+      {
+        "text": "Hypertext",
+        "correct": true
+      },
+      {
+        "text": "High throughput",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 98,
+    "question": "In HTML, ML stands for:",
+    "options": [
+      {
+        "text": "Markup language",
+        "correct": true
+      },
+      {
+        "text": "Media language",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 99,
+    "question": "True or False: The browser parses the HTML and decides how to display the page?",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 100,
+    "question": "What is the purpose of a navigation bar?",
+    "options": [
+      {
+        "text": "It allows users to move around your website",
+        "correct": true
+      },
+      {
+        "text": "It allows you to draw a line across the page",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 101,
+    "question": "Why is whitespace important?",
+    "options": [
+      {
+        "text": "Since the browser ignores whitespace in an HTML document, you can clearly lay out the code without affecting how the web page will look.",
+        "correct": true
+      },
+      {
+        "text": "It allows you to easily create spaces between the various parts of a web page.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "question": "What is the most important difference between HTML and most other document formats?",
+    "options": [
+      {
+        "text": "HTML allows you to make links from one document to another.",
+        "correct": true
+      },
+      {
+        "text": "HTML allows you to separate navigation from content.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "question": "Images are typically stored as separate files, not embedded in the HTML document.",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 104,
+    "question": "What are HTML attributes for?",
+    "options": [
+      {
+        "text": "They let you create spaces between words",
+        "correct": false
+      },
+      {
+        "text": "They let you provide extra information to the browser about a tag",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 105,
+    "question": "True or False: HTML elements are hierarchical?",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 106,
+    "question": "True or False: h1 tags contain meta data?",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 107,
+    "question": "In good practice, which tags should all HTML documents have? Please select all that apply.",
+    "options": [
+      {
+        "text": "html",
+        "correct": true
+      },
+      {
+        "text": "body",
+        "correct": true
+      },
+      {
+        "text": "head",
+        "correct": true
+      },
+      {
+        "text": "a",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 108,
+    "question": "What happens to a web browser if the HTML is not correctly structured?",
+    "options": [
+      {
+        "text": "It will definitely crash",
+        "correct": false
+      },
+      {
+        "text": "It probably won't crash",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 109,
+    "question": "True or False: The HTML language changes over time?",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 110,
+    "question": "True or False: It is best to use capital letters for tags",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 111,
+    "question": "20-year-old HTML documents can be read by modern web browsers",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 112,
+    "question": "What is the head section of an HTML document used for? Select all that apply",
+    "options": [
+      {
+        "text": "Meta data that describes the content of the site.",
+        "correct": true
+      },
+      {
+        "text": "The top part of the content that users will see when they visit the site.",
+        "correct": false
+      },
+      {
+        "text": "The title of the document.",
+        "correct": true
+      },
+      {
+        "text": "The brain of the web page",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 113,
+    "question": "Which are examples of badly formed HTML?",
+    "options": [
+      {
+        "text": "<a><p></a></p>",
+        "correct": true
+      },
+      {
+        "text": "<ol><li></li></ol>",
+        "correct": false
+      },
+      {
+        "text": "<p><a></p>Link</h1></a><h1>",
+        "correct": true
+      },
+      {
+        "text": "<p><a href=\"http://www.google.com\"></a></p>",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 114,
+    "question": "Inspect the code of a website you use regularly. Which tags can you find?",
+    "options": [
+      {
+        "text": "<website>",
+        "correct": false
+      },
+      {
+        "text": "<div>",
+        "correct": true
+      },
+      {
+        "text": "<html>",
+        "correct": true
+      },
+      {
+        "text": "<body>",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 115,
+    "question": "Which tag should you use for a numbered list?",
+    "options": [
+      {
+        "text": "<ol>",
+        "correct": true
+      },
+      {
+        "text": "<ul>",
+        "correct": false
+      },
+      {
+        "text": "<h2>",
+        "correct": false
+      },
+      {
+        "text": "<dl>",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 116,
+    "question": "Which is the correct attribute to use to tell the browser where to find an image?",
+    "options": [
+      {
+        "text": "href",
+        "correct": false
+      },
+      {
+        "text": "src",
+        "correct": true
+      },
+      {
+        "text": "&src;",
+        "correct": false
+      },
+      {
+        "text": "<src>",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 117,
+    "question": "Which are true about HTML documents?",
+    "options": [
+      {
+        "text": "The HT in HTML refers to the fact that you can create a link from one document to another",
+        "correct": true
+      },
+      {
+        "text": "We use <a> tags to link from one document to another",
+        "correct": true
+      },
+      {
+        "text": "We use <href> tags to link from one document to another",
+        "correct": false
+      },
+      {
+        "text": "Web browsers use whitespace to layout the rendered page",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 118,
+    "question": "Concerning hyperlinks, which are true?",
+    "options": [
+      {
+        "text": "The browser underlines the text in an a tag",
+        "correct": true
+      },
+      {
+        "text": "The browser makes the text in an a tag blue",
+        "correct": true
+      },
+      {
+        "text": "Links only go one way",
+        "correct": true
+      },
+      {
+        "text": "The browser guesses which page to go to if we put in a broken link address",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 119,
+    "question": "Select the code which creates a list of links:",
+    "options": [
+      {
+        "text": "<li> <ol> <a href=\"index.html\">home</a></ol> <ol> <a href=\"about.html\">about</a></ol> <ol> <a href=\"contact.html\">contact</a></ol> </li>",
+        "correct": false
+      },
+      {
+        "text": "<ol> <li> <a href=\"index.html\">home</a></li> <li> <a href=\"about.html\">about</a></li> <li> <a href=\"contact.html\">contact</a></li> </ol>",
+        "correct": true
+      },
+      {
+        "text": "<links> <li> <a href=\"index.html\">home</a></li> <li> <a href=\"about.html\">about</a></li> <li> <a href=\"contact.html\">contact</a></li> </links>",
+        "correct": false
+      },
+      {
+        "text": "<ol> <a> <li href=\"index.html\">home<li></a> <a> <li href=\"about.html\">about</li></a> <a> <li href=\"contact.html\">contact</li></a> </ol>",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 120,
+    "question": "Select the most correct structure for an HTML document:",
+    "options": [
+      {
+        "text": "<html> <head> </head> <body> </body> </html>",
+        "correct": true
+      },
+      {
+        "text": "<html> <head> <body> </head> </body></html>",
+        "correct": false
+      },
+      {
+        "text": "<html> <title> </title> <head> </head> <body> </body></html>",
+        "correct": false
+      },
+      {
+        "text": "<html> <head> <h1>title </h1> </head> <body> </body></html>",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 121,
+    "question": "Which of the following tags are only associated with meta data? Select all that apply.",
+    "options": [
+      {
+        "text": "html",
+        "correct": false
+      },
+      {
+        "text": "head",
+        "correct": true
+      },
+      {
+        "text": "title",
+        "correct": true
+      },
+      {
+        "text": "h1",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 122,
+    "question": "What does CSS stand for?",
+    "options": [
+      {
+        "text": "Cascading style sheets",
+        "correct": true
+      },
+      {
+        "text": "Custom style sheet",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 123,
+    "question": "What is the tag we use to add an external CSS file?",
+    "options": [
+      {
+        "text": "style",
+        "correct": false
+      },
+      {
+        "text": "link",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 124,
+    "question": "What CSS property do I set to change the background colour of the page?",
+    "options": [
+      {
+        "text": "body",
+        "correct": false
+      },
+      {
+        "text": "background",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 125,
+    "question": "Which is not a font family?",
+    "options": [
+      {
+        "text": "Times New Roman Bold",
+        "correct": true
+      },
+      {
+        "text": "Serif",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 126,
+    "question": "Which font is normally used to display code?",
+    "options": [
+      {
+        "text": "a monospaced font",
+        "correct": true
+      },
+      {
+        "text": "A sans-serif font",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 127,
+    "question": "Why should we customise links?",
+    "options": [
+      {
+        "text": "To get rid of the weird hand cursor",
+        "correct": false
+      },
+      {
+        "text": "To emphasise to the user where the links are",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 128,
+    "question": "What is the purpose of a CSS selector?",
+    "options": [
+      {
+        "text": "It connects a set of CSS properties to things in the HTML document",
+        "correct": true
+      },
+      {
+        "text": "It tells the browser which CSS file to load",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 129,
+    "question": "a:hover is a CSS selector to select links that the user is hovering over",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 130,
+    "question": "CSS classes only apply to one type of tag",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 131,
+    "question": "HTML tags can have multiple classes",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 132,
+    "question": "Which of the following is a definition of a new CSS class?",
+    "options": [
+      {
+        "text": ".bold { font-weight:bold;}",
+        "correct": true
+      },
+      {
+        "text": "bold { font-weight:bold;}",
+        "correct": false
+      },
+      {
+        "text": "#bold { font-weight:bold;}",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 133,
+    "question": "Why do we use bootstrap?",
+    "options": [
+      {
+        "text": "All websites should look the same for accessibility",
+        "correct": false
+      },
+      {
+        "text": "To reset the browser's default styles to a clean, modern state",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 134,
+    "question": "Bootstrap can be used along with my own CSS stylesheets",
+    "options": [
+      {
+        "text": "True",
+        "correct": true
+      },
+      {
+        "text": "False",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 135,
+    "question": "How many columns are in a standard boostrap grid?",
+    "options": [
+      {
+        "text": "10",
+        "correct": false
+      },
+      {
+        "text": "12",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 136,
+    "question": "How many col-md-3 columns fit in a standard boostrap grid?",
+    "options": [
+      {
+        "text": "3",
+        "correct": false
+      },
+      {
+        "text": "4",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 137,
+    "question": "How many parameters does the border property shorthand normally have?",
+    "options": [
+      {
+        "text": "3",
+        "correct": true
+      },
+      {
+        "text": "1",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 138,
+    "question": "Responsive web pages respond to user input",
+    "options": [
+      {
+        "text": "True",
+        "correct": false
+      },
+      {
+        "text": "False",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": 139,
+    "question": "Select the correct way to link to an external CSS file",
+    "options": [
+      {
+        "text": "<a class=\"styles.css\">Styled link</a>",
+        "correct": false
+      },
+      {
+        "text": "<link rel=\"stylesheet\" href=\"styles.css\" type=\"text/css\"/>",
+        "correct": true
+      },
+      {
+        "text": "<link rel=\"stylesheet\" src=\"styles.css\" type=\"text/css\">",
+        "correct": false
+      },
+      {
+        "text": "<style rel=\"stylesheet\" href=\"styles.css\" type=\"text/css\"></style>",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 140,
+    "question": "Which of the following puts blue text on a red background? (select all that apply)",
+    "options": [
+      {
+        "text": "color: #blue;\nbackground: #red;",
+        "correct": false
+      },
+      {
+        "text": "color: blue;\nbackground: red;",
+        "correct": true
+      },
+      {
+        "text": "color: #0000FF;\nbackground: #FF0000;",
+        "correct": true
+      },
+      {
+        "text": "font-color: blue;\nbackground-color: red;",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": 141,
+    "question": "Which of the following is a serif font?",
+    "options": [
+      {
+        "text": "Times New Roman",
+        "correct": true
+      },
+      {
+        "text": "Arial",
+        "correct": false
+      },
+      {
+        "text": "Helvetica",
+        "correct": false
+      },
+      {
+        "text": "Bold",
+        "correct": false
+      }
+    ]
+  }
+];
+
+    let order = shuffle(QUESTIONS.map((_, index) => index));
+    let currentIndex = 0;
+    let selected = new Set();
+    let checked = false;
+    let currentOptions = [];
+    let correctCount = 0;
+    let wrongCount = 0;
+    let answeredIds = new Set();
+    let mistakes = new Set();
+    let mistakesOnly = false;
+
+    const questionStat = document.getElementById("questionStat");
+    const correctStat = document.getElementById("correctStat");
+    const wrongStat = document.getElementById("wrongStat");
+    const accuracyStat = document.getElementById("accuracyStat");
+    const questionNumber = document.getElementById("questionNumber");
+    const questionText = document.getElementById("questionText");
+    const multiHint = document.getElementById("multiHint");
+    const optionsEl = document.getElementById("options");
+    const feedback = document.getElementById("feedback");
+    const feedbackResult = document.getElementById("feedbackResult");
+    const feedbackAnswer = document.getElementById("feedbackAnswer");
+    const checkBtn = document.getElementById("checkBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const mistakesBtn = document.getElementById("mistakesBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const modeBadge = document.getElementById("modeBadge");
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function getCurrentQuestion() {
+      return QUESTIONS[order[currentIndex]];
+    }
+
+    function getCorrectIndexes(options) {
+      return options
+        .map((option, index) => option.correct ? index : -1)
+        .filter(index => index !== -1);
+    }
+
+    function sameSet(a, b) {
+      if (a.size !== b.size) return false;
+      for (const value of a) {
+        if (!b.has(value)) return false;
+      }
+      return true;
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function render() {
+      const qId = order[currentIndex];
+      const q = getCurrentQuestion();
+
+      if (!currentOptions.length) {
+        currentOptions = shuffle(q.options.map((option, originalIndex) => ({ ...option, originalIndex })));
+      }
+
+      const correctIndexes = new Set(getCorrectIndexes(currentOptions));
+      const isMulti = correctIndexes.size > 1;
+
+      questionStat.textContent = `${currentIndex + 1} / ${order.length}`;
+      correctStat.textContent = correctCount;
+      wrongStat.textContent = wrongCount;
+
+      const totalAnswered = correctCount + wrongCount;
+      const accuracy = totalAnswered === 0 ? 0 : Math.round((correctCount / totalAnswered) * 100);
+      accuracyStat.textContent = `${accuracy}%`;
+
+      questionNumber.textContent = `Question #${q.id}`;
+      questionText.textContent = q.question;
+      multiHint.textContent = isMulti ? `Multiple answers: select ${correctIndexes.size} options` : "Single answer";
+      modeBadge.textContent = mistakesOnly ? "Mistakes mode" : "All questions";
+
+      optionsEl.innerHTML = "";
+      currentOptions.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.textContent = option.text;
+
+        if (!checked && selected.has(index)) {
+          button.classList.add("selected");
+        }
+
+        if (checked) {
+          if (option.correct) {
+            button.classList.add("correct");
+          } else if (selected.has(index)) {
+            button.classList.add("wrong");
+          } else {
+            button.classList.add("dim");
+          }
+        }
+
+        button.addEventListener("click", () => toggleOption(index, isMulti));
+        optionsEl.appendChild(button);
+      });
+
+      if (!checked) {
+        feedback.className = "feedback";
+        feedbackResult.textContent = "";
+        feedbackAnswer.textContent = "";
+      }
+
+      checkBtn.disabled = checked || selected.size === 0;
+      mistakesBtn.textContent = `Practice mistakes (${mistakes.size})`;
+      mistakesBtn.disabled = mistakes.size === 0;
+
+      progressText.textContent = `${answeredIds.size} / ${QUESTIONS.length}`;
+      progressBar.style.width = `${(answeredIds.size / QUESTIONS.length) * 100}%`;
+    }
+
+    function toggleOption(index, isMulti) {
+      if (checked) return;
+
+      if (isMulti) {
+        if (selected.has(index)) selected.delete(index);
+        else selected.add(index);
+      } else {
+        selected = new Set([index]);
+      }
+
+      render();
+    }
+
+    function checkAnswer() {
+      if (checked || selected.size === 0) return;
+
+      const qId = order[currentIndex];
+      const correctIndexes = new Set(getCorrectIndexes(currentOptions));
+      const isCorrect = sameSet(selected, correctIndexes);
+
+      checked = true;
+      answeredIds.add(qId);
+
+      if (isCorrect) {
+        correctCount++;
+        mistakes.delete(qId);
+      } else {
+        wrongCount++;
+        mistakes.add(qId);
+      }
+
+      const correctAnswers = currentOptions
+        .filter(option => option.correct)
+        .map(option => option.text);
+
+      feedback.className = `feedback show ${isCorrect ? "correct-text" : "wrong-text"}`;
+      feedbackResult.textContent = isCorrect ? "Correct ✅" : "Wrong ❌";
+      feedbackAnswer.innerHTML = `
+        Correct answer${correctAnswers.length > 1 ? "s" : ""}:
+        <ul class="answers-list">
+          ${correctAnswers.map(answer => `<li><strong>${escapeHtml(answer)}</strong></li>`).join("")}
+        </ul>
+      `;
+
+      saveProgress();
+      render();
+    }
+
+    function nextQuestion() {
+      selected = new Set();
+      checked = false;
+      currentOptions = [];
+      currentIndex = currentIndex + 1 >= order.length ? 0 : currentIndex + 1;
+      saveProgress();
+      render();
+    }
+
+    function restartAll() {
+      order = shuffle(QUESTIONS.map((_, index) => index));
+      currentIndex = 0;
+      selected = new Set();
+      checked = false;
+      currentOptions = [];
+      correctCount = 0;
+      wrongCount = 0;
+      answeredIds = new Set();
+      mistakes = new Set();
+      mistakesOnly = false;
+      localStorage.removeItem("webDevQuizProgress");
+      render();
+    }
+
+    function startMistakesMode() {
+      if (mistakes.size === 0) return;
+      order = shuffle([...mistakes]);
+      currentIndex = 0;
+      selected = new Set();
+      checked = false;
+      currentOptions = [];
+      mistakesOnly = true;
+      saveProgress();
+      render();
+    }
+
+    function saveProgress() {
+      localStorage.setItem("webDevQuizProgress", JSON.stringify({
+        order,
+        currentIndex,
+        correctCount,
+        wrongCount,
+        answeredIds: [...answeredIds],
+        mistakes: [...mistakes],
+        mistakesOnly
+      }));
+    }
+
+    function loadProgress() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("webDevQuizProgress"));
+        if (!saved) return;
+        order = saved.order || order;
+        currentIndex = saved.currentIndex || 0;
+        correctCount = saved.correctCount || 0;
+        wrongCount = saved.wrongCount || 0;
+        answeredIds = new Set(saved.answeredIds || []);
+        mistakes = new Set(saved.mistakes || []);
+        mistakesOnly = Boolean(saved.mistakesOnly);
+      } catch (e) {
+        console.warn("Could not load progress", e);
+      }
+    }
+
+    checkBtn.addEventListener("click", checkAnswer);
+    nextBtn.addEventListener("click", nextQuestion);
+    restartBtn.addEventListener("click", restartAll);
+    mistakesBtn.addEventListener("click", startMistakesMode);
+
+    loadProgress();
+    render();
+  </script>
+</body>
+</html>
